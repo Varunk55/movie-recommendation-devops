@@ -1,0 +1,49 @@
+# model/bayesian_model.py
+
+from pgmpy.models import DiscreteBayesianNetwork
+from pgmpy.factors.discrete import TabularCPD
+from pgmpy.inference import VariableElimination
+
+def build_model():
+    model = DiscreteBayesianNetwork([
+        ('UserAge', 'GenrePreference'),
+        ('UserGender', 'GenrePreference'),
+        ('GenrePreference', 'MovieGenre'),
+        ('MovieGenre', 'LikedMovie')
+    ])
+
+    # Example CPDs (replace with your logic)
+    cpd_user_age = TabularCPD('UserAge', 3, [[0.3], [0.4], [0.3]])
+    cpd_user_gender = TabularCPD('UserGender', 2, [[0.5], [0.5]])
+    cpd_genre_preference = TabularCPD('GenrePreference', 3,
+        [[0.6, 0.3, 0.2, 0.1, 0.4, 0.2],
+         [0.2, 0.4, 0.5, 0.3, 0.3, 0.5],
+         [0.2, 0.3, 0.3, 0.6, 0.3, 0.3]],
+        evidence=['UserAge', 'UserGender'], evidence_card=[3, 2]
+    )
+    cpd_movie_genre = TabularCPD('MovieGenre', 3,
+        [[0.7, 0.2, 0.1],
+         [0.2, 0.5, 0.3],
+         [0.1, 0.3, 0.6]],
+        evidence=['GenrePreference'], evidence_card=[3]
+    )
+    cpd_liked_movie = TabularCPD('LikedMovie', 2,
+        [[0.8, 0.3, 0.2],
+         [0.2, 0.7, 0.8]],
+        evidence=['MovieGenre'], evidence_card=[3]
+    )
+
+    model.add_cpds(
+        cpd_user_age, cpd_user_gender,
+        cpd_genre_preference, cpd_movie_genre, cpd_liked_movie
+    )
+
+    model.check_model()
+    return VariableElimination(model)
+
+def get_prediction(infer, user_age, user_gender):
+    query = infer.query(variables=['LikedMovie'], evidence={
+        'UserAge': user_age,
+        'UserGender': user_gender
+    })
+    return query

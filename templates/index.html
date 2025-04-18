@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Recommendation System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 Movie Recommendation System</h1>
+        <form method="POST">
+            <label>Age:</label>
+            <select name="age">
+                <option value="0">Young</option>
+                <option value="1">Adult</option>
+            </select>
+
+            <label>Gender:</label>
+            <select name="gender">
+                <option value="0">Male</option>
+                <option value="1">Female</option>
+                <option value="2">Others</option>
+            </select>
+
+            <label>Movie Genre:</label>
+            <select name="genre">
+                <option value="0">Horror</option>
+                <option value="1">Thriller</option>
+                <option value="2">Adventure</option>
+                <option value="3">Drama</option>
+                <option value="4">Romantic</option>
+                <option value="5">Action</option>
+            </select>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction %}
+            <div class="result">
+                <h2>Recommended: {{ prediction }}</h2>
+                <canvas id="barChart" width="300" height="200"></canvas>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if probabilities %}
+    <script>
+        const ctx = document.getElementById('barChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['No', 'Yes'],
+                datasets: [{
+                    label: 'Probability of Liking Movie',
+                    data: [{{ probabilities['No'] }}, {{ probabilities['Yes'] }}],
+                    backgroundColor: ['#ff6666', '#66ff66']
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 1
+                    }
+                }
+            }
+        });
+    </script>
+    {% endif %}
+</body>
+</html>
