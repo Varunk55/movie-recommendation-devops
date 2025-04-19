@@ -4,9 +4,10 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Varunk55/movie-recommendation-devops.git'
+                git branch: 'main', url: 'https://github.com/Varunk55/movie-recommendation-devops.git'
             }
         }
+
 
         stage('Install Dependencies') {
             steps {
