@@ -26,5 +26,12 @@ pipeline {
                 sh 'docker build -t movie-recommender .'
             }
         }
+        stage('Docker Push') {
+            steps {
+               sh 'docker tag movie-recommender kingv5/movie-recommender:latest'
+               sh 'docker push kingv5/movie-recommender:latest'
+            }
+        }
+
     }
 }
