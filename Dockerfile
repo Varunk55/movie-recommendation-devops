@@ -8,7 +8,7 @@ WORKDIR /app
 COPY . .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --timeout=100 --retries=5 -r requirements.txt
 
 # Expose the Streamlit port
 EXPOSE 8501
