@@ -2,17 +2,16 @@ pipeline {
     agent any
 
     environment {
-        // No need to use .username or .password here
-        // This just stores the ID of your DockerHub credentials from Jenkins
+        // Store DockerHub credentials from Jenkins
         DOCKER_CREDENTIALS = credentials('dockerhub-creds')
     }
 
+    stages {
         stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/Varunk55/movie-recommendation-devops.git'
             }
-         }
-
+        }
 
         stage('Install Dependencies') {
             steps {
@@ -34,7 +33,11 @@ pipeline {
 
         stage('Docker Login') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKERHUB_USER',
+                    passwordVariable: 'DOCKERHUB_PASS'
+                )]) {
                     sh 'echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin'
                 }
             }
@@ -46,6 +49,5 @@ pipeline {
                 sh 'docker push kingv5/movie-recommender:latest'
             }
         }
-    } // <- this closes "stages"
-} // <- this closes the whole pipeline block
-
+    }
+}
