@@ -46,5 +46,6 @@ pipeline {
                 sh 'docker push kingv5/movie-recommender:latest'
             }
         }
-    }
-}
+    } // <- this closes "stages"
+} // <- this closes the whole pipeline block
+
