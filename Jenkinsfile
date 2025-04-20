@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS_USR = credentials('dockerhub-creds').username
-        DOCKER_CREDENTIALS_PSW = credentials('dockerhub-creds').password
+        // No need to use .username or .password here
+        // This just stores the ID of your DockerHub credentials from Jenkins
+        DOCKER_CREDENTIALS = credentials('dockerhub-creds')
     }
 
     stages {
@@ -33,7 +34,9 @@ pipeline {
 
         stage('Docker Login') {
             steps {
-                sh 'echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS')]) {
+                    sh 'echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin'
+                }
             }
         }
 
