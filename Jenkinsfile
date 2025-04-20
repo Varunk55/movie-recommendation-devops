@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        // This is optional if you're using withCredentials directly
-        // DOCKER_CREDENTIALS = credentials('dockerhub-creds')
+        DOCKER_CREDENTIALS_USR = credentials('dockerhub-creds').username
+        DOCKER_CREDENTIALS_PSW = credentials('dockerhub-creds').password
     }
 
     stages {
@@ -33,9 +33,7 @@ pipeline {
 
         stage('Docker Login') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_CREDENTIALS_USR', passwordVariable: 'DOCKER_CREDENTIALS_PSW')]) {
-                    sh 'echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin'
-                }
+                sh 'echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin'
             }
         }
 
