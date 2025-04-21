@@ -14,7 +14,7 @@ with st.form("user_input"):
     st.subheader("🎯 Select Your Info:")
     age = st.selectbox("🧓 Select Age Group", options=["Teen", "Adult", "Senior"])
     gender = st.radio("🧑 Select Gender", options=["Male", "Female"])
-    genre = st.selectbox("🎞️ Choose Movie Genre", options=["Action", "Comedy", "Romance", "Horror", "Drama"])
+    genre = st.selectbox("🎞️ Choose Movie Genre", options=[" -mAction", "Comedy", "Romance", "Horror", "Drama"])
     submit = st.form_submit_button("🔍 Predict")
 
 # --- Process Form ---
